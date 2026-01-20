@@ -152,21 +152,32 @@
 </footer>
 
 <script>
-const sheetID = "2PACX-1vSs9elkY5SPsxVkPapIrjuhEXeeQPfUqNtpnz_lVm5k7_05dOXSlazLYsjDjuYr813hU-JYypSJW-9C";
+  const sheetID = "2PACX-1vSs9elkY5SPsxVkPapIrjuhEXeeQPfUqNtpnz_lVm5k7_05dOXSlazLYsjDjuYr813hU-JYypSJW-9C";
   const sheetName = "Sheet1";
 
   const url = `https://docs.google.com/spreadsheets/d/e/${sheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
 
-  let allItems = [];
-
   fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      allItems = data;
-      renderItems(data);
-    });
+    .then(res => res.text())
+    .then(text => {
+      const json = JSON.parse(text.substr(47).slice(0, -2));
+      const rows = json.table.rows || [];
+
+      const items = rows.map(r => ({
+        name: r.c[0]?.v || "",
+        price: r.c[1]?.v || ""
+      }));
+
+      renderItems(items);
+    })
+    .catch(err => console.error("Fetch error:", err));
 
   function renderItems(items) {
+    if (!Array.isArray(items)) {
+      console.error("Items is not an array", items);
+      return;
+    }
+
     const list = document.getElementById("list");
     list.innerHTML = "";
 
@@ -175,23 +186,16 @@ const sheetID = "2PACX-1vSs9elkY5SPsxVkPapIrjuhEXeeQPfUqNtpnz_lVm5k7_05dOXSlazLY
       card.className = "card";
       card.innerHTML = `
         <div class="name">${item.name}</div>
-        <div class="price">${item.price} <span>ر.س</span></div>
+        <div class="price">${item.price}</div>
       `;
       list.appendChild(card);
     });
   }
-
-  document.getElementById("search").addEventListener("input", function () {
-    const value = this.value.toLowerCase();
-    const filtered = allItems.filter(item =>
-      item.name.toLowerCase().includes(value)
-    );
-    renderItems(filtered);
-  });
 </script>
 
 </body>
 </html>
+
 
 
 
