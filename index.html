@@ -152,39 +152,43 @@
 </footer>
 
 <script>
-  const sheetID = "2PACX-1vSs9elkY5SPsxVkPapIrjuhEXeeQPfUqNtpnz_lVm5k7_05dOXSlazLYsjDjuYr813hU-JYypSJW-9C";
-  const sheetName = "Sheet1";
+  const spreadsheetID = "1h_3CxpF9xrkFkFddOeOM1FcYkbAXDUZ7lt24QIatahk";
+  const sheetName = "Sheet1"; // تأكد من اسم الشيت إذا غيرته
 
-  const url = `https://docs.google.com/spreadsheets/d/e/${sheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+  const url = `https://docs.google.com/spreadsheets/d/${spreadsheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
 
   fetch(url)
     .then(res => res.text())
     .then(text => {
+      // تحويل النص JSON صحيح
       const json = JSON.parse(text.substring(47).slice(0, -2));
+
+      // السطور
       const rows = json.table.rows || [];
 
+      // تحويل السطور لعناصر قابلة للعرض
       const items = rows.map(r => ({
-        name: r.c[0]?.v ?? "",
-        price: r.c[1]?.v ?? ""
+        name: r.c[0]?.v || "",
+        price: r.c[1]?.v || ""
       }));
 
+      // عرضهم
       renderItems(items);
     })
-    .catch(err => console.error(err));
+    .catch(err => console.error("Fetch error:", err));
 
   function renderItems(items) {
     const list = document.getElementById("list");
     list.innerHTML = "";
 
-    if (!Array.isArray(items)) return;
-
     items.forEach(item => {
-      list.innerHTML += `
+      const html = `
         <div class="card">
           <div class="name">${item.name}</div>
           <div class="price">${item.price}</div>
         </div>
       `;
+      list.innerHTML += html;
     });
   }
 </script>
@@ -192,6 +196,7 @@
 
 </body>
 </html>
+
 
 
 
