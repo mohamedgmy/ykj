@@ -160,41 +160,39 @@
   fetch(url)
     .then(res => res.text())
     .then(text => {
-      const json = JSON.parse(text.substr(47).slice(0, -2));
+      const json = JSON.parse(text.substring(47).slice(0, -2));
       const rows = json.table.rows || [];
 
       const items = rows.map(r => ({
-        name: r.c[0]?.v || "",
-        price: r.c[1]?.v || ""
+        name: r.c[0]?.v ?? "",
+        price: r.c[1]?.v ?? ""
       }));
 
       renderItems(items);
     })
-    .catch(err => console.error("Fetch error:", err));
+    .catch(err => console.error(err));
 
   function renderItems(items) {
-    if (!Array.isArray(items)) {
-      console.error("Items is not an array", items);
-      return;
-    }
-
     const list = document.getElementById("list");
     list.innerHTML = "";
 
+    if (!Array.isArray(items)) return;
+
     items.forEach(item => {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <div class="name">${item.name}</div>
-        <div class="price">${item.price}</div>
+      list.innerHTML += `
+        <div class="card">
+          <div class="name">${item.name}</div>
+          <div class="price">${item.price}</div>
+        </div>
       `;
-      list.appendChild(card);
     });
   }
 </script>
 
+
 </body>
 </html>
+
 
 
 
