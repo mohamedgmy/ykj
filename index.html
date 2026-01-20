@@ -152,9 +152,10 @@
 </footer>
 
 <script>
- const sheetID = "2PACX-1vSs9elkY5SPsxVkPapIrjuhEXeeQPfUqNtpnz_lVm5k7_05dOXSlazLYsjDjuYr813hU-JYypSJW-9C";
-const url = `https://opensheet.elk.sh/${sheetID}/Sheet1`;
+const sheetID = "2PACX-1vSs9elkY5SPsxVkPapIrjuhEXeeQPfUqNtpnz_lVm5k7_05dOXSlazLYsjDjuYr813hU-JYypSJW-9C";
+  const sheetName = "Sheet1";
 
+  const url = `https://docs.google.com/spreadsheets/d/e/${sheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
 
   let allItems = [];
 
@@ -191,6 +192,7 @@ const url = `https://opensheet.elk.sh/${sheetID}/Sheet1`;
 
 </body>
 </html>
+
 
 
 
