@@ -116,12 +116,6 @@
       white-space: nowrap;
     }
 
-    .price span {
-      font-size: 13px;
-      color: var(--muted);
-      margin-right: 4px;
-    }
-
     footer {
       text-align: center;
       font-size: 13px;
@@ -133,7 +127,6 @@
 <body>
 
 <header>
-  <!-- ضع اللوغو -->
   <img src="logo.png" alt="مطبعة بيرق">
   <h1>مطبعة بيرق</h1>
   <p>قائمة الأسعار</p>
@@ -153,27 +146,24 @@
 
 <script>
   const spreadsheetID = "1h_3CxpF9xrkFkFddOeOM1FcYkbAXDUZ7lt24QIatahk";
-  const sheetName = "Sheet1"; // تأكد من اسم الشيت إذا غيرته
+  const sheetName = "Sheet1";
 
   const url = `https://docs.google.com/spreadsheets/d/${spreadsheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+
+  let allItems = [];
 
   fetch(url)
     .then(res => res.text())
     .then(text => {
-      // تحويل النص JSON صحيح
       const json = JSON.parse(text.substring(47).slice(0, -2));
-
-      // السطور
       const rows = json.table.rows || [];
 
-      // تحويل السطور لعناصر قابلة للعرض
-      const items = rows.map(r => ({
+      allItems = rows.map(r => ({
         name: r.c[0]?.v || "",
         price: r.c[1]?.v || ""
       }));
 
-      // عرضهم
-      renderItems(items);
+      renderItems(allItems);
     })
     .catch(err => console.error("Fetch error:", err));
 
@@ -181,25 +171,36 @@
     const list = document.getElementById("list");
     list.innerHTML = "";
 
+    if (items.length === 0) {
+      list.innerHTML = "<p style='text-align:center;color:#777'>لا توجد نتائج</p>";
+      return;
+    }
+
     items.forEach(item => {
-      const html = `
+      list.innerHTML += `
         <div class="card">
           <div class="name">${item.name}</div>
           <div class="price">${item.price}</div>
         </div>
       `;
-      list.innerHTML += html;
     });
   }
-</script>
 
+  document.getElementById("search").addEventListener("input", function () {
+    const q = this.value.trim().toLowerCase();
+
+    if (!q) {
+      renderItems(allItems);
+      return;
+    }
+
+    const filtered = allItems.filter(item =>
+      item.name.toLowerCase().includes(q)
+    );
+
+    renderItems(filtered);
+  });
+</script>
 
 </body>
 </html>
-
-
-
-
-
-
-
